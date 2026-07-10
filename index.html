@@ -253,7 +253,7 @@
 
     <div id="app">
         
-        <!-- SEITE 1: DIE BEGRÜSSUNG (MIT PRANK BUTTON) -->
+        <!-- SEITE 1: DIE BEGRÜSSUNG (MIT KONTROLLIERTEM PRANK BUTTON) -->
         <div id="page-1" class="page visible active">
             <div class="speech-bubble">
                 Hey, dein Schatz Denis hat mich erstellt und zu dir geschickt, um dir eine Nachricht zu übergeben. Bitte klicke auf das untere Feld...
@@ -382,7 +382,7 @@
             }
         });
 
-        // Prank Button Logik für Seite 1
+        // Prank Button Logik für Seite 1 (Bleibt jetzt garantiert "In der Nähe")
         let prankClicked = false;
         function handlePrankButton() {
             const btn = document.getElementById('prank-btn');
@@ -396,23 +396,18 @@
                 // Hasen-Gesicht auf schockiert/lustig ändern
                 bunnyContainer.className = "bunny-container state-shocked animate-wiggle";
 
-                // Button an eine zufällige Position auf dem Bildschirm klatschen
-                btn.style.position = 'fixed';
+                // Berechne einen kleinen, kontrollierten Versatz (X und Y Richtung)
+                // Der Button springt ca. 50px bis 90px nach links/rechts und 40px bis 70px nach oben/unten
+                const randX = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 40) + 50); 
+                const randY = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 30) + 40); 
                 
-                // Sicherheitsabstand (Padding), damit der Button nicht hinter dem Displayrand verschwindet
-                const padding = 50; 
-                const randomX = Math.floor(Math.random() * (window.innerWidth - 120 - padding * 2)) + padding;
-                const randomY = Math.floor(Math.random() * (window.innerHeight - 60 - padding * 2)) + padding;
-                
-                btn.style.left = randomX + 'px';
-                btn.style.top = randomY + 'px';
+                // Verschiebe den Button relativ zu seiner normalen Position
+                btn.style.transform = `translate(${randX}px, ${randY}px)`;
                 
                 prankClicked = true;
             } else {
                 // Beim zweiten Klick den Button zurücksetzen und weiterleiten
-                btn.style.position = '';
-                btn.style.left = '';
-                btn.style.top = '';
+                btn.style.transform = '';
                 navigateTo('page-love', 'state-normal');
             }
         }
@@ -441,7 +436,6 @@
                     // Setze den emotionalen Zustand des Hasen auf der Zielseite
                     const targetBunny = targetPage.querySelector('.bunny-container');
                     if(targetBunny) {
-                        // Extrahiere die Animationsklasse (letztes Wort) und setze das Gesicht neu
                         const currentAnim = targetBunny.className.split(' ').pop();
                         targetBunny.className = `bunny-container ${bunnyStateClass} ${currentAnim}`;
                     }
@@ -453,7 +447,7 @@
                             triggerConfetti();
                         }
                     }, 30);
-                }, 400); // Entspricht der CSS Transition-Dauer
+                }, 400);
             }
         }
 
@@ -512,7 +506,6 @@
             draw();
         }
 
-        // Event-Listener für Größenänderung des Bildschirms (Konfetti Anpassung)
         window.addEventListener('resize', () => {
             const canvas = document.getElementById('confetti-canvas');
             if(canvas) {
