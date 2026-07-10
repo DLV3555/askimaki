@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Eine kleine Überraschung ✨</title>
+    <!-- Google Font für den verspielten, runden Look -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
@@ -114,6 +115,7 @@
             justify-content: center;
             gap: 10px;
             text-decoration: none;
+            z-index: 10;
         }
 
         .btn:active, .btn:hover {
@@ -122,7 +124,7 @@
             box-shadow: 0 4px 10px rgba(114, 214, 155, 0.3);
         }
 
-        /* Auswahlkarten (Seite 3) */
+        /* Auswahlkarten (Seite 3 & Liebes-Seite) */
         .cards-container {
             width: 100%;
             display: flex;
@@ -144,6 +146,7 @@
             justify-content: space-between;
             box-shadow: 0 6px 15px rgba(255, 182, 193, 0.2);
             transition: all 0.25s ease;
+            text-align: left;
         }
 
         .choice-card:hover, .choice-card:active {
@@ -155,6 +158,7 @@
 
         .choice-card .emoji {
             font-size: 1.6rem;
+            margin-left: 10px;
         }
 
         .page-title {
@@ -222,13 +226,14 @@
         }
 
         /* Dynamic Face Expressions via JS State Classes */
-        .bunny-svg .eyes-normal, .bunny-svg .eyes-happy, .bunny-svg .eyes-heart {
+        .bunny-svg .eyes-normal, .bunny-svg .eyes-happy, .bunny-svg .eyes-heart, .bunny-svg .eyes-shocked {
             display: none;
         }
 
         .state-normal .eyes-normal { display: block; }
         .state-happy .eyes-happy { display: block; }
         .state-heart .eyes-heart { display: block; }
+        .state-shocked .eyes-shocked { display: block; }
 
         /* Konfetti Canvas */
         #confetti-canvas {
@@ -248,22 +253,29 @@
 
     <div id="app">
         
+        <!-- SEITE 1: DIE BEGRÜSSUNG (MIT PRANK BUTTON) -->
         <div id="page-1" class="page visible active">
             <div class="speech-bubble">
                 Hey, dein Schatz Denis hat mich erstellt und zu dir geschickt, um dir eine Nachricht zu übergeben. Bitte klicke auf das untere Feld...
             </div>
             
             <div class="bunny-container state-normal animate-bounce">
+                <!-- Reusable Cute SVG Bunny Vector -->
                 <svg class="bunny-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Ohren -->
                     <rect class="ear" x="66" y="15" width="26" height="75" rx="13" fill="#FFFFFF" />
                     <rect class="ear" x="108" y="15" width="26" height="75" rx="13" fill="#FFFFFF" />
                     <rect class="inner-ear" x="72" y="25" width="14" height="48" rx="7" fill="#FFCCD5" />
                     <rect class="inner-ear" x="114" y="25" width="14" height="48" rx="7" fill="#FFCCD5" />
+                    <!-- Körper / Kopf -->
                     <ellipse cx="100" cy="125" rx="55" ry="48" fill="#FFFFFF" />
+                    <!-- Wängchen-Blush -->
                     <circle cx="64" cy="138" r="9" fill="#FFCCD5" opacity="0.75" />
                     <circle cx="136" cy="138" r="9" fill="#FFCCD5" opacity="0.75" />
+                    <!-- Süßes Mündchen -->
                     <path d="M 94 133 Q 98 138 100 134 Q 102 138 106 133" fill="none" stroke="#5D4037" stroke-width="3" stroke-linecap="round" />
                     
+                    <!-- AUGEN-STATES -->
                     <g class="eyes-normal">
                         <circle cx="78" cy="120" r="5.5" fill="#5D4037" />
                         <circle cx="122" cy="120" r="5.5" fill="#5D4037" />
@@ -276,28 +288,61 @@
                         <text x="78" y="126" font-size="20" text-anchor="middle">❤️</text>
                         <text x="122" y="126" font-size="20" text-anchor="middle">❤️</text>
                     </g>
+                    <g class="eyes-shocked">
+                        <circle cx="78" cy="120" r="7" fill="none" stroke="#5D4037" stroke-width="3" />
+                        <circle cx="78" cy="120" r="2" fill="#5D4037" />
+                        <circle cx="122" cy="120" r="7" fill="none" stroke="#5D4037" stroke-width="3" />
+                        <circle cx="122" cy="120" r="2" fill="#5D4037" />
+                    </g>
                 </svg>
             </div>
 
-            <button class="btn" onclick="navigateTo('page-2', 'state-happy')">➔</button>
+            <button id="prank-btn" class="btn" onclick="handlePrankButton()">➔</button>
         </div>
 
+        <!-- NEUE SEITE: LIEBES ABFRAGE -->
+        <div id="page-love" class="page">
+            <div class="speech-bubble">
+                liebs du denis ne kadarrr
+            </div>
+
+            <div class="bunny-container state-normal animate-bounce">
+                <!-- Hasen Platzhalter -->
+            </div>
+
+            <div class="cards-container">
+                <div class="choice-card" onclick="navigateTo('page-2', 'state-happy')">
+                    <span>cünkü o benim hayatimin anlami</span> <span class="emoji">❤️</span>
+                </div>
+                <div class="choice-card" onclick="navigateTo('page-2', 'state-happy')">
+                    <span>cooooooooooook seviyorum onu</span> <span class="emoji">💖</span>
+                </div>
+                <div class="choice-card" onclick="handleLoveNo()">
+                    <span>nö</span> <span class="emoji">🤨</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEITE 2: DAS KOMPLIMENT -->
         <div id="page-2" class="page">
             <div class="speech-bubble">
                 Damm, du bist ja ehrlich hübsch, wie Denis dich beschrieben hat! Stimmt wirklich, damm... Aber drück bitte auf weiter.
             </div>
 
             <div class="bunny-container state-happy animate-wiggle">
-                </div>
+                <!-- Hasen Platzhalter -->
+            </div>
 
             <button class="btn" onclick="navigateTo('page-3', 'state-happy')">Weiter</button>
         </div>
 
+        <!-- SEITE 3: DIE AUSWAHL -->
         <div id="page-3" class="page">
             <h2 class="page-title">Hey, du darfst dir was auswählen! ✨</h2>
             
             <div class="bunny-container state-happy animate-bounce" style="transform: scale(0.85); margin-bottom: 10px;">
-                </div>
+                <!-- Hasen Platzhalter -->
+            </div>
 
             <div class="cards-container">
                 <div class="choice-card" onclick="navigateTo('page-4', 'state-heart')">
@@ -315,9 +360,11 @@
             </div>
         </div>
 
+        <!-- SEITE 4: DIE AUFLÖSUNG -->
         <div id="page-4" class="page">
             <div class="bunny-container state-heart animate-dance">
-                </div>
+                <!-- Hasen Platzhalter -->
+            </div>
 
             <div class="resolution-text">
                 hmmm du hast nen geilen taste mag ich btw du hast dir grad nen kurs gebucht, die hinterlegte kreditkarte is aber die von denis haha du hattest doch wohl glück . du hast nen gutschein für dich und eine person deiner wahl einlösbar bis 2 jahre see you soon btw du bist voll hübsch .
@@ -335,6 +382,50 @@
             }
         });
 
+        // Prank Button Logik für Seite 1
+        let prankClicked = false;
+        function handlePrankButton() {
+            const btn = document.getElementById('prank-btn');
+            const bubble = document.querySelector('#page-1 .speech-bubble');
+            const bunnyContainer = document.querySelector('#page-1 .bunny-container');
+            
+            if (!prankClicked) {
+                // Text ändern
+                bubble.innerText = "aa den prank musste ich bringen jetrz darfst du drücken.";
+                
+                // Hasen-Gesicht auf schockiert/lustig ändern
+                bunnyContainer.className = "bunny-container state-shocked animate-wiggle";
+
+                // Button an eine zufällige Position auf dem Bildschirm klatschen
+                btn.style.position = 'fixed';
+                
+                // Sicherheitsabstand (Padding), damit der Button nicht hinter dem Displayrand verschwindet
+                const padding = 50; 
+                const randomX = Math.floor(Math.random() * (window.innerWidth - 120 - padding * 2)) + padding;
+                const randomY = Math.floor(Math.random() * (window.innerHeight - 60 - padding * 2)) + padding;
+                
+                btn.style.left = randomX + 'px';
+                btn.style.top = randomY + 'px';
+                
+                prankClicked = true;
+            } else {
+                // Beim zweiten Klick den Button zurücksetzen und weiterleiten
+                btn.style.position = '';
+                btn.style.left = '';
+                btn.style.top = '';
+                navigateTo('page-love', 'state-normal');
+            }
+        }
+
+        // Virus-Logik für den "nö"-Button
+        function handleLoveNo() {
+            const bubble = document.querySelector('#page-love .speech-bubble');
+            const bunnyContainer = document.querySelector('#page-love .bunny-container');
+            
+            bubble.innerText = "schwöre ich installiere dir einen virus mach nichts falsch";
+            bunnyContainer.className = "bunny-container state-shocked animate-wiggle";
+        }
+
         // Single Page Navigation mit flüssiger CSS-Animation
         function navigateTo(targetPageId, bunnyStateClass) {
             const activePage = document.querySelector('.page.active');
@@ -346,10 +437,13 @@
                     activePage.classList.remove('visible');
                     
                     targetPage.classList.add('visible');
+                    
                     // Setze den emotionalen Zustand des Hasen auf der Zielseite
                     const targetBunny = targetPage.querySelector('.bunny-container');
                     if(targetBunny) {
-                        targetBunny.className = `bunny-container ${bunnyStateClass} ` + targetBunny.className.split(' ').pop();
+                        // Extrahiere die Animationsklasse (letztes Wort) und setze das Gesicht neu
+                        const currentAnim = targetBunny.className.split(' ').pop();
+                        targetBunny.className = `bunny-container ${bunnyStateClass} ${currentAnim}`;
                     }
 
                     setTimeout(() => {
